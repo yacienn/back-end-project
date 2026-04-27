@@ -4,7 +4,7 @@ const pool = require("./Database");
 
 const app = express();
 const port = 5000;
-
+console.log("just test");
 // Serve frontend files
 app.use(express.static("public"));
 
