@@ -6,7 +6,8 @@ const users = []
 
 app.post('/sign_up' , (req , res)=>{
    const { email, password } = req.body;
-   const userExist = users.find(u => u.email === email);
+   try {
+      const userExist = users.find(u => u.email === email);
     if (userExist) {
         return res.status(409).json({
             message: "User already exists"
@@ -18,12 +19,17 @@ app.post('/sign_up' , (req , res)=>{
         message : "user create successfuly" ,
         user : newUser
     });
+   }catch(e){
+    res.status(500).send({
+        message : e.message
+    })}
+   
 })
 
 app.post('/log_in' , (req , res)=>{
       const  {email , password } = req.body ;
-      const user = users.find(u => u.email === email);
-
+      try {
+const user = users.find(u => u.email === email);
       if (!user){
         return res.status(404).json({
             message : "user no exist yet "
@@ -38,6 +44,12 @@ app.post('/log_in' , (req , res)=>{
             message : "welcome" ,
             user : email 
         })
+      }catch(e){
+        res.status(500).send({
+            message : e.message 
+        });
+      }
+      
 })
 
 app.get('/regester' , (req , res)=>{
