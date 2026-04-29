@@ -20,8 +20,28 @@ app.post('/sign_up' , (req , res)=>{
     });
 })
 
+app.post('/log_in' , (req , res)=>{
+      const  {email , password } = req.body ;
+      const user = users.find(u => u.email === email);
+
+      if (!user){
+        return res.status(404).json({
+            message : "user no exist yet "
+        })
+      }
+    if (user.password != password){
+        return res.status(401).json({
+            message : "password wrong "
+        })
+    }
+        res.status(200).json({
+            message : "welcome" ,
+            user : email 
+        })
+})
+
 app.get('/regester' , (req , res)=>{
-   res.send(users)
+   res.send(users);
 })
 
 
