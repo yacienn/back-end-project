@@ -1,10 +1,12 @@
-const express = require("express");
+import express from 'express';
+import bcrypt from 'bcrypt'
+
 const app = express();
 const port = 3000;
 app.use(express.json());
 const users = []
 
-app.post('/sign_up' , (req , res)=>{
+app.post('/sign_up' , async(req , res)=>{
    const { email, password } = req.body;
    try {
       const userExist = users.find(u => u.email === email);
@@ -13,7 +15,8 @@ app.post('/sign_up' , (req , res)=>{
             message: "User already exists"
         });
     }
-    const newUser = {email , password};
+    const hashPassword = await bcrypt.hash(password , 10);
+    const newUser = {email , hashPassword};
     users.push(newUser);
     res.status(201).json({
         message : "user create successfuly" ,
@@ -26,7 +29,7 @@ app.post('/sign_up' , (req , res)=>{
    
 })
 
-app.post('/log_in' , (req , res)=>{
+app.post('/log_in' , async(req , res)=>{
       const  {email , password } = req.body ;
       try {
 const user = users.find(u => u.email === email);
@@ -35,7 +38,8 @@ const user = users.find(u => u.email === email);
             message : "user no exist yet "
         })
       }
-    if (user.password != password){
+      const isMatch = await bcrypt.compare(password , user.hashPassword)
+    if (!isMatch){
         return res.status(401).json({
             message : "password wrong "
         })
