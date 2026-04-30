@@ -6,6 +6,7 @@ const port = 3000;
 app.use(express.json());
 const users = []
 
+//sign_uo
 app.post('/sign_up' , async(req , res)=>{
    const { email, password } = req.body;
    try {
@@ -29,6 +30,7 @@ app.post('/sign_up' , async(req , res)=>{
    
 })
 
+//log_in
 app.post('/log_in' , async(req , res)=>{
       const  {email , password } = req.body ;
       try {
@@ -56,6 +58,7 @@ const user = users.find(u => u.email === email);
       
 })
 
+//regester
 app.get('/regester' , (req , res)=>{
    res.send(users);
 })
