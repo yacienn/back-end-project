@@ -1,12 +1,14 @@
 import express from 'express';
 import bcrypt from 'bcrypt'
+import { pool } from "./db.js";
 
 const app = express();
 const port = 3000;
+
 app.use(express.json());
 const users = []
 
-//sign_uo
+//sign up
 app.post('/sign_up' , async(req , res)=>{
    const { email, password } = req.body;
    try {
@@ -30,7 +32,7 @@ app.post('/sign_up' , async(req , res)=>{
    
 })
 
-//log_in
+//log in 
 app.post('/log_in' , async(req , res)=>{
       const  {email , password } = req.body ;
       try {
@@ -55,15 +57,26 @@ const user = users.find(u => u.email === email);
             message : e.message 
         });
       }
-      
 })
 
-//regester
+
 app.get('/regester' , (req , res)=>{
    res.send(users);
 })
 
 
+
+pool.query("SELECT NOW()", (err, res) => {
+  if (err) {
+    console.error("Connection error:", err);
+  } else {
+    console.log("PostgreSQL time:", res.rows[0]);
+  }
+
+  pool.end();
+});
+
 app.listen(port , ()=>{
     console.log(`lisetning in port ${port}`);
+    
 })
