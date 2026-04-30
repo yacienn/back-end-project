@@ -1,29 +1,32 @@
 import express from 'express';
 import bcrypt from 'bcrypt'
-import { pool } from "./db.js";
+import { pool } from './config/db.js';
 
 const app = express();
 const port = 3000;
-
 app.use(express.json());
-const users = []
 
 //sign up
 app.post('/sign_up' , async(req , res)=>{
    const { email, password } = req.body;
    try {
-      const userExist = users.find(u => u.email === email);
-    if (userExist) {
+      const userExist = await pool.query(
+        "SELECT * FROM users WHERE email = $1" , 
+        [email]
+      );
+    if (userExist.rows.length > 0) {
         return res.status(409).json({
             message: "User already exists"
         });
     }
     const hashPassword = await bcrypt.hash(password , 10);
-    const newUser = {email , hashPassword};
-    users.push(newUser);
+    const newUser = await pool.query(
+        "INSERT INTO users (email , password ) VALUES ($1 , $2 ) RETURNING id , email" ,
+        [email , hashPassword]
+    )
     res.status(201).json({
         message : "user create successfuly" ,
-        user : newUser
+        user : newUser.rows[0]
     });
    }catch(e){
     res.status(500).send({
@@ -60,21 +63,16 @@ const user = users.find(u => u.email === email);
 })
 
 
-app.get('/regester' , (req , res)=>{
-   res.send(users);
+app.get('/regester' ,async (req , res)=>{
+    const result = await pool.query(
+        "SELECT * FROM users"
+    )
+    res.json(
+    {message : "user is :" ,
+      users  : result.rows
+    }
+   );
 })
-
-
-
-pool.query("SELECT NOW()", (err, res) => {
-  if (err) {
-    console.error("Connection error:", err);
-  } else {
-    console.log("PostgreSQL time:", res.rows[0]);
-  }
-
-  pool.end();
-});
 
 app.listen(port , ()=>{
     console.log(`lisetning in port ${port}`);
