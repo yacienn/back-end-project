@@ -1,6 +1,8 @@
 npm install bcrypt
 npm install -g nodemon 
 
+import dotenv from "dotenv";
+
 /routes
 /controllers
 /models
