@@ -1,5 +1,6 @@
-import 'package:app/controller/log_in_vm.dart';
-import 'package:app/view/log/log_in_page.dart';
+import 'package:app/features/auth/controller/log_in_vm.dart';
+import 'package:app/features/auth/view/log_in_page.dart';
+import 'package:app/features/home/view/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,11 @@ class MyApp extends StatelessWidget {
     ],
     child:
     MaterialApp(
+      initialRoute: '/Log_in' ,
+      routes: {
+        '/Log_in' : (context) => LogInPage(),
+        '/HomePage' : (context) => HomePage()
+      },
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
